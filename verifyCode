@@ -1,0 +1,153 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Grids, Menus, StdCtrls;
+
+type
+  TForm1 = class(TForm)
+    StringGrid1: TStringGrid;
+    OpenDialog1: TOpenDialog;
+    MainMenu1: TMainMenu;
+    N1: TMenuItem;
+    N2: TMenuItem;
+    N3: TMenuItem;
+    N4: TMenuItem;
+    N5: TMenuItem;
+    SaveDialog1: TSaveDialog;
+    Label1: TLabel;
+    GroupBox1: TGroupBox;
+    Label2: TLabel;
+    Button1: TButton;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Edit1: TEdit;
+    Edit2: TEdit;
+    Edit3: TEdit;
+    Edit4: TEdit;
+    Button2: TButton;
+    procedure FormCreate(Sender: TObject);
+    procedure N5Click(Sender: TObject);
+    procedure N2Click(Sender: TObject);
+    procedure N3Click(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+type
+info=record 
+    naim, mar, ch, kol, dat: string[50];
+end;
+
+var
+  Form1: TForm1;
+  r:info; 
+  f: file of info; 
+  n,i: integer; 
+  flag:boolean;
+
+implementation
+uses Unit2, Unit3;
+{$R *.dfm}
+
+procedure TForm1.FormCreate(Sender: TObject);
+var i:integer;
+begin
+     stringgrid1.Cells[1,0]:='Name';
+     stringgrid1.Cells[2,0]:='email';
+     stringgrid1.Cells[3,0]:='ref';
+     stringgrid1.Cells[4,0]:='info';
+     stringgrid1.Cells[5,0]:='net';
+end;
+
+procedure TForm1.N5Click(Sender: TObject);
+begin
+Close;
+end;
+
+procedure TForm1.N2Click(Sender: TObject);
+begin
+    if OpenDialog1.Execute then
+    begin
+    AssignFile(F,OpenDialog1.FileName); 
+ OpenDialog
+    Reset(F);  
+    n:=0;
+    while not eof(f) do
+    begin
+        read(F,r);
+        //stringGrid1.Cells[0,N+1]:=IntToStr(N+1);
+        stringGrid1.Cells[1,N+1]:=r.naim;
+        stringGrid1.Cells[2,N+1]:=r.mar;
+        stringGrid1.Cells[3,N+1]:=r.ch;
+        stringGrid1.Cells[4,N+1]:=r.kol;
+        stringGrid1.Cells[5,N+1]:=r.dat;
+        N:=N+1;
+    end;
+    closeFile(F);
+  end;
+end;
+
+
+
+
+procedure TForm1.N3Click(Sender: TObject);
+var i:integer;
+begin
+    if SaveDialog1.Execute then
+    begin
+        AssignFile(F,SaveDialog1.FileName);
+        rewrite(F); 
+        i:=1;
+        while stringGrid1.Cells[1,i]<>'' do
+        begin
+            r.naim:=Trim(stringGrid1.Cells[1,i]);
+            r.mar:=Trim(stringGrid1.Cells[2,i]);
+            r.ch:=Trim(stringGrid1.Cells[3,i]);
+            r.kol:=Trim(stringGrid1.Cells[4,i]);
+            r.dat:=Trim(stringGrid1.Cells[5,i]);
+            write(F,r);
+            i:=i+1;
+            end;
+            closeFile(F)
+        end;
+end;
+procedure TForm1.Button1Click(Sender: TObject);
+var i,j:integer;
+begin
+flag:=false;
+     for i:=1 to StringGrid1.RowCount do
+       begin
+           if (stringgrid1.Cells[1,i]<>'') and
+           (stringgrid1.Cells[2,i]<>'')  and
+           (stringgrid1.Cells[3,i]<>'')  and
+           (stringgrid1.Cells[4,i]<>'') and
+           ((edit1.Text=stringgrid1.Cells[1,i])  or (edit2.Text=stringgrid1.Cells[2,i])
+           or(edit3.Text=stringgrid1.Cells[3,i]) or (edit4.Text=stringgrid1.Cells[4,i])) then
+       begin
+            flag:=true;
+            
+      end;
+            if flag=false then
+            begin
+                showmessage('Товара нет в магазине!!!');
+                exit;
+            end;
+end;
+procedure TForm1.FormShow(Sender: TObject);
+begin
+     //Form3.Hide;
+end;
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+Form1.Close;
+end;
